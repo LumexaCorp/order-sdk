@@ -11,17 +11,16 @@ readonly class OrderDTO
      */
     public function __construct(
         public int $id,
-        public int $storeId,
-        public array $items,
+        public int $user_id,
         public string $status,
-        public float $totalAmount,
-        public ?string $customerName = null,
-        public ?string $customerEmail = null,
-        public ?string $customerPhone = null,
-        public ?string $shippingAddress = null,
-        public ?string $billingAddress = null,
-        public ?\DateTimeImmutable $createdAt = null,
-        public ?\DateTimeImmutable $updatedAt = null,
+        public array $shipping_address,
+        public array $billing_address,
+        public ?string $notes,
+        public array $items,
+        public int $total_items,
+        public float $total_price,
+        public \DateTimeImmutable $created_at,
+        public \DateTimeImmutable $updated_at,
     ) {}
 
     /**
@@ -31,20 +30,19 @@ readonly class OrderDTO
     {
         return new self(
             id: $data['id'],
-            storeId: $data['store_id'],
+            user_id: $data['user_id'],
             items: array_map(
                 fn (array $item) => OrderItemDTO::fromArray($item),
                 $data['items'] ?? []
             ),
             status: $data['status'],
-            totalAmount: $data['total_amount'],
-            customerName: $data['customer_name'] ?? null,
-            customerEmail: $data['customer_email'] ?? null,
-            customerPhone: $data['customer_phone'] ?? null,
-            shippingAddress: $data['shipping_address'] ?? null,
-            billingAddress: $data['billing_address'] ?? null,
-            createdAt: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
-            updatedAt: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
+            shipping_address: $data['shipping_address'],
+            billing_address: $data['billing_address'],
+            notes: $data['notes'],
+            total_items: (int) ($data['total_items'] ?? 0),
+            total_price: (float) ($data['total_price'] ?? 0),
+            created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
+            updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
         );
     }
 
@@ -55,17 +53,16 @@ readonly class OrderDTO
     {
         return [
             'id' => $this->id,
-            'store_id' => $this->storeId,
             'items' => array_map(fn (OrderItemDTO $item) => $item->toArray(), $this->items),
             'status' => $this->status,
-            'total_amount' => $this->totalAmount,
-            'customer_name' => $this->customerName,
-            'customer_email' => $this->customerEmail,
-            'customer_phone' => $this->customerPhone,
-            'shipping_address' => $this->shippingAddress,
-            'billing_address' => $this->billingAddress,
-            'created_at' => $this->createdAt?->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updatedAt?->format('Y-m-d H:i:s'),
+            'total_price' => $this->total_price,
+            'user_id' => $this->user_id,
+            'shipping_address' => $this->shipping_address,
+            'billing_address' => $this->billing_address,
+            'notes' => $this->notes,
+            'total_items' => $this->total_items,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
         ];
     }
 }

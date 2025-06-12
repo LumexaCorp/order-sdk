@@ -65,17 +65,15 @@ class OrderClient
      * @param array<OrderItemDTO> $items
      * @throws OrderException|ValidationException
      */
-    public function createOrder(int $storeId, array $items): OrderDTO
+    public function createOrder(array $data): OrderDTO
     {
         try {
             $response = $this->httpClient->post('/api/orders', [
-                'json' => [
-                    'items' => array_map(fn (OrderItemDTO $item) => $item->toArray(), $items),
-                ],
+                'json' => $data,
             ]);
 
             $data = json_decode((string) $response->getBody(), true);
-            return OrderDTO::fromArray($data);
+            return OrderDTO::fromArray($data['data']);
         } catch (\Throwable $e) {
             $this->handleApiError($e);
         }
@@ -91,7 +89,7 @@ class OrderClient
         try {
             $response = $this->httpClient->get("/api/orders/{$orderId}");
             $data = json_decode((string) $response->getBody(), true);
-            return OrderDTO::fromArray($data);
+            return OrderDTO::fromArray($data['data']);
         } catch (\Throwable $e) {
             $this->handleApiError($e);
         }
@@ -131,7 +129,7 @@ class OrderClient
             ]);
 
             $data = json_decode((string) $response->getBody(), true);
-            return OrderDTO::fromArray($data);
+            return OrderDTO::fromArray($data['data']);
         } catch (\Throwable $e) {
             $this->handleApiError($e);
         }
@@ -190,7 +188,7 @@ class OrderClient
                 'json' => $data,
             ]);
             $data = json_decode((string) $response->getBody(), true);
-            return OrderDTO::fromArray($data);
+            return OrderDTO::fromArray($data['data']);
         } catch (\Throwable $e) {
             $this->handleApiError($e);
         }

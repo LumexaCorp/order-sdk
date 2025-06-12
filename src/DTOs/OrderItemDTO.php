@@ -7,13 +7,15 @@ namespace Lumexa\OrderSdk\DTOs;
 readonly class OrderItemDTO
 {
     public function __construct(
-        public int $productId,
-        public string $productName,
-        public ?string $productDescription,
+        public int $id,
+        public int $order_id,
         public int $quantity,
-        public float $unitPrice,
-        public ?string $sku = null,
-        public ?array $options = null,
+        public float $unit_price,
+        public float $total_price,
+        public array $attributes,
+        public readonly ?ProductVariantDTO $product_variant,
+        public \DateTimeImmutable $created_at,
+        public \DateTimeImmutable $updated_at,
     ) {}
 
     /**
@@ -22,13 +24,15 @@ readonly class OrderItemDTO
     public static function fromArray(array $data): self
     {
         return new self(
-            productId: $data['product_id'],
-            productName: $data['product_name'],
-            productDescription: $data['product_description'] ?? null,
+            id: $data['id'],
+            order_id: $data['order_id'],
             quantity: $data['quantity'],
-            unitPrice: $data['unit_price'],
-            sku: $data['sku'] ?? null,
-            options: $data['options'] ?? null,
+            unit_price: $data['unit_price'],
+            total_price: $data['total_price'],
+            attributes: $data['attributes'],
+            product_variant: $data['product_variant'],
+            created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
+            updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
         );
     }
 
@@ -38,21 +42,15 @@ readonly class OrderItemDTO
     public function toArray(): array
     {
         return [
-            'product_id' => $this->productId,
-            'product_name' => $this->productName,
-            'product_description' => $this->productDescription,
+            'id' => $this->id,
+            'order_id' => $this->order_id,
             'quantity' => $this->quantity,
-            'unit_price' => $this->unitPrice,
-            'sku' => $this->sku,
-            'options' => $this->options,
+            'unit_price' => $this->unit_price,
+            'total_price' => $this->total_price,
+            'attributes' => $this->attributes,
+            'product_variant' => $this->product_variant,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
-    }
-
-    /**
-     * Calculate the total price for this item
-     */
-    public function getTotalPrice(): float
-    {
-        return $this->unitPrice * $this->quantity;
     }
 }
