@@ -27,10 +27,10 @@ readonly class OrderItemDTO
             id: $data['id'],
             order_id: $data['order_id'],
             quantity: $data['quantity'],
-            unit_price: $data['unit_price'],
-            total_price: $data['total_price'],
+            unit_price: (float) $data['unit_price'],
+            total_price: (float) $data['total_price'],
             attributes: $data['attributes'],
-            product_variant: $data['product_variant'],
+            product_variant: isset($data['product_variant']) ? ProductVariantDTO::fromArray($data['product_variant']) : null,
             created_at: isset($data['created_at']) ? new \DateTimeImmutable($data['created_at']) : null,
             updated_at: isset($data['updated_at']) ? new \DateTimeImmutable($data['updated_at']) : null,
         );
