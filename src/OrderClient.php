@@ -212,4 +212,15 @@ class OrderClient
             $this->handleApiError($e);
         }
     }
+
+    public function getOrderById(int $orderId): OrderDTO
+    {
+        try {
+            $response = $this->httpClient->get("/api/orders/{$orderId}");
+            $data = json_decode((string) $response->getBody(), true);
+            return OrderDTO::fromArray($data['data']);
+        } catch (\Throwable $e) {
+            $this->handleApiError($e);
+        }
+    }
 }
