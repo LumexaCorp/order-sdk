@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Lumexa\OrderSdk\DTOs;
 
+use Lumexa\AuthSdk\DTOs\UserDTO;
+
 readonly class OrderDTO
 {
     /**
@@ -16,6 +18,7 @@ readonly class OrderDTO
         public array $shipping_address,
         public array $billing_address,
         public ?string $notes,
+        public ?UserDTO $user,
         public array $items,
         public int $total_items,
         public float $total_price,
@@ -35,6 +38,7 @@ readonly class OrderDTO
                 fn (array $item) => OrderItemDTO::fromArray($item),
                 $data['items'] ?? []
             ),
+            user: isset($data['user']) ? UserDTO::fromArray($data['user']) : null,
             status: $data['status'],
             shipping_address: $data['shipping_address'],
             billing_address: $data['billing_address'],
@@ -55,6 +59,7 @@ readonly class OrderDTO
             'id' => $this->id,
             'items' => array_map(fn (OrderItemDTO $item) => $item->toArray(), $this->items),
             'status' => $this->status,
+            'user' => $this->user?->toArray(),
             'total_price' => $this->total_price,
             'user_id' => $this->user_id,
             'shipping_address' => $this->shipping_address,
